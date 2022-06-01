@@ -14,7 +14,7 @@ class deskTopVerify:
 
     # Lê o arquivo json
     def readFile(self):
-        return tl.decodeJson(vars.rootProject+'files/desktop.json', "file")
+        return tl.decodeJson('files/desktop.json', "file")
 
     # Lista os arquivos do desktop
     def listFiles(self):
@@ -47,67 +47,67 @@ class deskTopVerify:
     def organizeFiles(self, files):
         for file in files:
             if file.endswith(".txt"):
-                self.verifyFolder("Desktop/textos")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/textos/"+file)
+                self.verifyFolder("Desktop/Textos")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Textos/"+file)
             elif file.endswith(".pdf"):
-                self.verifyFolder("Desktop/pdfs")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/pdfs/"+file)
+                self.verifyFolder("Desktop/Pdfs")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Pdfs/"+file)
             elif file.endswith(".docx"):
-                self.verifyFolder("Desktop/docs")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/docs/"+file)
+                self.verifyFolder("Desktop/Docs")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Docs/"+file)
             elif file.endswith(".xlsx"):
-                self.verifyFolder("Desktop/xls")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/xls/"+file)
+                self.verifyFolder("Desktop/Xls")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Xls/"+file)
             elif file.endswith(".pptx"):
-                self.verifyFolder("Desktop/pptx")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/pptx/"+file)
+                self.verifyFolder("Desktop/Pptx")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Pptx/"+file)
             elif file.endswith(".jpg"):
-                self.verifyFolder("Desktop/imgs")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/imgs/"+file)
+                self.verifyFolder("Desktop/Imgs")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Imgs/"+file)
             elif file.endswith(".png"):
-                self.verifyFolder("Desktop/imgs")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/imgs/"+file)
+                self.verifyFolder("Desktop/Imgs")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Imgs/"+file)
             elif file.endswith(".mp3"):
-                self.verifyFolder("Desktop/musicas")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/musicas/"+file)
+                self.verifyFolder("Desktop/Musicas")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Musicas/"+file)
             elif file.endswith(".mp4"):
-                self.verifyFolder("Desktop/videos")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/videos/"+file)
+                self.verifyFolder("Desktop/Videos")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Videos/"+file)
             elif file.endswith(".zip"):
-                self.verifyFolder("Desktop/zip")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/zip/"+file)
+                self.verifyFolder("Desktop/Zip")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Zip/"+file)
             elif file.endswith(".rar"):
-                self.verifyFolder("Desktop/rar")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/rar/"+file)
+                self.verifyFolder("Desktop/Rar")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Rar/"+file)
             elif file.endswith(".7z"):
                 self.verifyFolder("Desktop/7z")
                 os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/7z/"+file)
             elif file.endswith(".iso"):
-                self.verifyFolder("Desktop/iso")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/iso/"+file)
+                self.verifyFolder("Desktop/Iso")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Iso/"+file)
             elif file.endswith(".exe"):
-                self.verifyFolder("Desktop/exe")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/exe/"+file)
+                self.verifyFolder("Desktop/Exe")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Exe/"+file)
             elif file.endswith(".apk"):
-                self.verifyFolder("Desktop/apk")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/apk/"+file)
+                self.verifyFolder("Desktop/Apk")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Apk/"+file)
             elif file.endswith(".bat"):
-                self.verifyFolder("Desktop/bat")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/bat/"+file)
+                self.verifyFolder("Desktop/Bat")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Bat/"+file)
             elif file.endswith(".sh"):
-                self.verifyFolder("Desktop/sh")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/sh/"+file)
+                self.verifyFolder("Desktop/Sh")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Sh/"+file)
             elif file.endswith(".py"):
-                self.verifyFolder("Desktop/py")
-                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/py/"+file)
+                self.verifyFolder("Desktop/Py")
+                os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Py/"+file)
             else:
                 # verifica se arquivo é uma pasta
                 if os.path.isdir(vars.rootPc+"Desktop/"+file):
-                    self.verifyFolder("Desktop/outrasPastas")
-                    os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/outrasPastas/"+file)
+                    self.verifyFolder("Desktop/OutrasPastas")
+                    os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/OutrasPastas/"+file)
                 else: 
-                    self.verifyFolder("Desktop/outros")
-                    os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/outros/"+file)
+                    self.verifyFolder("Desktop/Outros")
+                    os.rename(vars.rootPc+"Desktop/"+file, vars.rootPc+"Desktop/Outros/"+file)
         return True
 
     # Verifica se pasta existe, se não existir, cria
