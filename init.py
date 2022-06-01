@@ -1,4 +1,5 @@
-import files.verificarAreaDeTrabalho as dskTv
+import files.verifyFolders as dskTv
+import confing.cof as conf
 
-deskTopVerify = dskTv.deskTopVerify()
-print(deskTopVerify.filesDeskTop)
+deskTopVerify = dskTv.VerifyFolders(conf.confing["foldersForVerirify"])
+print(deskTopVerify.listFiles(conf.confing["foldersForVerirify"]))

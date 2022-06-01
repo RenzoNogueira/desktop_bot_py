@@ -1,2 +1,2 @@
-rootPc = "C:/Users/Renzo/"
-rootProject = "C:/Users/Renzo/Desktop/Py/"
+rootPc = "C:/Users/user/"
+rootProject = " C:/Users/user/Desktop/Projetos/desktop_bot_py/"
