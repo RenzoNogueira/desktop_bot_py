@@ -15,5 +15,8 @@
         "Docs",
         "Imgs",
         "Xls"
+    ],
+    "Downloads": [
+        "Imgs"
     ]
 }

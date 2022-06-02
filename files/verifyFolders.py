@@ -1,27 +1,34 @@
+from asyncore import read
+from operator import index
 import os
 import vars
 import tools.tools as tl
 import pyautogui as pg
 
+# set charset utf-8
+pg.FAILSAFE = True
+
+
 class VerifyFolders:
-    filesFolders = []
+    filesFoldersAcept = []
     filesInFolders = []
     foldersToVerify = []
 
     def __init__(self, folders):
         self.foldersToVerify = folders
-        self.filesFolders = self.readFile(self.foldersToVerify)
+        self.filesFoldersAcept = self.readFile(self.foldersToVerify)
         self.filesInFolders = self.listFiles(self.foldersToVerify)
         self.verifyFiles(self.foldersToVerify)
 
-    # Lê o arquivo json
+    # Lê o arquivo json de arquivos aceitos
     def readFile(self, folders = foldersToVerify):
-        files = []
+        files = {}
         fileJson = open("acceptedFiles.json")
         fileJson = tl.decodeJson(fileJson)
         for folder in fileJson:
             if folder in folders:
-                files.extend(fileJson[folder])
+                files[folder] = fileJson[folder]
+        print("Arquivos aceitos: \n"+str(files))
         return files
 
     # Lista os arquivos do desktop
@@ -30,101 +37,77 @@ class VerifyFolders:
         for folder in folders:
             files[folder] = os.listdir(vars.rootPc+folder)
         return files
-    # TODO Verificar se o arquivo existe, se não existir, deletar
+
     # Verifica se os arquivos do desktop estão corretos
     def verifyFiles(self, folders = filesInFolders):
         arquivosDesconhecidos = {}
-        # for com indice "folder" e posição dentro de folders
         for folder in folders:
-            for file in folders[folders.index(folder)]:
-                print(file)
-                # if file not in self.filesFolders
-                    # arquivosDesconhecidos[file] = folder
+            # print(self.filesInFolders[folder])
+            for file in self.filesInFolders[folder]:
+                if file not in self.filesFoldersAcept[folder]:
+                    print("Arq desc: ["+folder+"] "+file)
+                    # adiciona ao objeto arquivosDesconhecidos
+                    arquivosDesconhecidos[file] = folder
         if len(arquivosDesconhecidos) > 0:
-            strApresentacao = ""
-            for arquivo in arquivosDesconhecidos:
-                strApresentacao += arquivo+"\n"
-            action = pg.confirm("Os arquivos abaixo não são desconhecidos no Downloads:\n"+strApresentacao, "Arquivos não encontrados no desktop", ["Deletar", "Organizar", "Cancelar"])
-            if action == "Deletar":
-                self.deleteFiles(arquivosDesconhecidos)
-            elif action == "Organizar":
-                self.organizeFiles(arquivosDesconhecidos)
-            elif action == "Cancelar":
-                return False
+            prompt = pg.confirm("O que deseja fazer?", "Arquivos não listados encontrados", ["Oganizar", "Ignorar"])
+            if prompt == "Oganizar":
+                for file in arquivosDesconhecidos:
+                    print("Arquivo: "+arquivosDesconhecidos[file]+" - "+file)
+                    self.organizeFiles(arquivosDesconhecidos[file], str(file))
+            elif prompt == "Ignorar":
+                self.createLogFile(arquivosDesconhecidos)
+                pg.alert("Os arquivos não listados foram ignorados e estão listados em um arquivo txt na área de trabalho.","Você optou por ignorar os arquivos não listados.")
         return len(arquivosDesconhecidos) == 0
 
     # Deletar arquivos passados por parametro
     def deleteFiles(self, files):
         for file in files:
-            os.remove(vars.rootPc+"Downloads/"+file)
+            os.remove(vars.rootPc+file)
+        return True
+
+    # Criar arquivo de lote de arquivos não listados na área de trabalho
+    def createLogFile(self, files):
+        logFile = open(vars.rootPc+"Desktop/arquivosNaoListados.txt", "w", encoding="utf-8")
+        for file in files:
+            logFile.write(files[file] + ": " + file + "\n")
+        logFile.close()
         return True
 
     # Organizar os arquivos recebidos por parametro em pastas com suas determinadas extensões
-    def organizeFiles(self, files):
-        for file in files:
-            if file.endswith(".txt"):
-                self.verifyFolder("Downloads/Textos")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Textos/"+file)
-            elif file.endswith(".pdf"):
-                self.verifyFolder("Downloads/Pdfs")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Pdfs/"+file)
-            elif file.endswith(".docx"):
-                self.verifyFolder("Downloads/Docs")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Docs/"+file)
-            elif file.endswith(".xlsx"):
-                self.verifyFolder("Downloads/Xls")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Xls/"+file)
-            elif file.endswith(".pptx"):
-                self.verifyFolder("Downloads/Pptx")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Pptx/"+file)
-            elif file.endswith(".jpg"):
-                self.verifyFolder("Downloads/Imgs")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Imgs/"+file)
-            elif file.endswith(".png"):
-                self.verifyFolder("Downloads/Imgs")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Imgs/"+file)
-            elif file.endswith(".mp3"):
-                self.verifyFolder("Downloads/Musicas")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Musicas/"+file)
-            elif file.endswith(".mp4"):
-                self.verifyFolder("Downloads/Videos")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Videos/"+file)
-            elif file.endswith(".zip"):
-                self.verifyFolder("Downloads/Zip")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Zip/"+file)
-            elif file.endswith(".rar"):
-                self.verifyFolder("Downloads/Rar")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Rar/"+file)
-            elif file.endswith(".7z"):
-                self.verifyFolder("Downloads/7z")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/7z/"+file)
-            elif file.endswith(".iso"):
-                self.verifyFolder("Downloads/Iso")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Iso/"+file)
-            elif file.endswith(".exe"):
-                self.verifyFolder("Downloads/Exe")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Exe/"+file)
-            elif file.endswith(".apk"):
-                self.verifyFolder("Downloads/Apk")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Apk/"+file)
-            elif file.endswith(".bat"):
-                self.verifyFolder("Downloads/Bat")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Bat/"+file)
-            elif file.endswith(".sh"):
-                self.verifyFolder("Downloads/Sh")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Sh/"+file)
-            elif file.endswith(".py"):
-                self.verifyFolder("Downloads/Py")
-                os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Py/"+file)
+    def organizeFiles(self, folder, file):
+        # Lê arquivo txt contendo as extensões
+        fileExtensions = open("extensions.txt", "r", encoding="utf-8")
+        fileExtensions = fileExtensions.read().split("\n")
+        tarefaCompleta = False
+        # Veridica se a extensão do arquivo é conhecida
+        for ext in fileExtensions:
+            if file.endswith(ext):
+                # Verifica se pasta existe, se não existir, cria
+                self.verifyFolder(folder+"/"+ext)
+                # Move o arquivo para a pasta
+                os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/"+ext+"/"+file)
+                print("Arquivo movido: "+folder+"/"+file)
+                tarefaCompleta = True
+                return True
+        # Senão mover para pasta Outros
+        if not tarefaCompleta:
+            # verifica se o arquivo é uma pasta
+            if os.path.isdir(vars.rootPc+folder+"/"+file):
+                # Verifica se pasta existe, se não existir, cria
+                self.verifyFolder(folder+"/Pastas/")
+                # Move a pasta para Pastas
+                os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/Pastas/"+file)
+                print("Pasta movida: "+folder+"/Pastas/"+file)
+                tarefaCompleta = True
+                return True
             else:
-                # verifica se arquivo é uma pasta
-                if os.path.isdir(vars.rootPc+"Downloads/"+file):
-                    self.verifyFolder("Downloads/OutrasPastas")
-                    os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/OutrasPastas/"+file)
-                else: 
-                    self.verifyFolder("Downloads/Outros")
-                    os.rename(vars.rootPc+"Downloads/"+file, vars.rootPc+"Downloads/Outros/"+file)
-        return True
+                # Verifica se pasta existe, se não existir, cria
+                self.verifyFolder(folder+"/Outros")
+                # Move o arquivo para a Outros
+                os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/Outros/"+file)
+                print("Arquivo movido: "+folder+"/Outros/"+file)
+                return True
+        return tarefaCompleta
 
     # Verifica se pasta existe, se não existir, cria
     def verifyFolder(self, folder):
