@@ -1,6 +1,8 @@
 import files.verifyFolders as dskTv
-import confing.cof as conf
-import saudacao.hello as saudacao
+import config.cof as conf
+import safety.safety as safety
 
-if saudacao.saudacao():
-    deskTopVerify = dskTv.VerifyFolders(conf.confing["foldersForVerirify"])
+dskTv = dskTv.VerifyFolders(conf.config["foldersForVerirify"])
+dskTv()
+safety = safety.safety(True, 4)
+safety()
