@@ -4,7 +4,6 @@ import os
 import vars
 import tools.tools as tl
 import pyautogui as pg
-import time
 
 # set charset utf-8
 pg.FAILSAFE = True

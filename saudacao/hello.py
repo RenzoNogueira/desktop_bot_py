@@ -1,7 +1,7 @@
 # Saudação
 import time
 import pyautogui as pg
-import confing.cof as conf
+import vars
 
 def saudacao():
     saudacao = None
@@ -13,10 +13,10 @@ def saudacao():
     elif time.strftime("%H") >= "19" and time.strftime("%H") <= "23":
         saudacao = "Boa noite"
 
-    confirm = pg.confirm("\tOlá, seja bem vindo!\n\n\t\t😁\n\nDeseja que eu execute em segundo plano?", "Olá, "+saudacao+ " "+ conf.nameUser,  ["Executar", "Não obrigado"])
+    confirm = pg.confirm("\tOlá, seja bem vindo!\n\n\t\t😁\n\nDeseja que eu execute alguns processos em segundo plano?", "Olá, "+saudacao+ " "+ vars.user,  ["Executar", "Não obrigado"])
     if confirm == "Executar":
         confirm = True
     elif confirm == "Não obrigado":
-        pg.alert("Obrigado, nós veremos depois!", "Olá, "+saudacao+ " "+ conf.nameUser)
+        pg.alert("Obrigado, nós veremos depois! Algumas operações de segurança continuarão executando em segundo plano.", "Olá, "+saudacao+ " "+ vars.user)
         confirm = False
     return confirm

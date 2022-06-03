@@ -1,6 +1,7 @@
 import pyautogui as pg
 import time
 import json
+import config.cof as conf
 
 class safety:
     toVerify = {}
@@ -63,8 +64,28 @@ class safety:
                 self.print("[Checando por]: safety/images/"+img)
                 if self.locateImg("safety/images/"+img) != False:
                     pg.alert("Você está em um site privado.", "Aviso")
+                    self.checkPassword()
                     breaking = True
                     break
+
+    # Verificar Senha
+    def checkPassword(self, obj = toVerify):
+        password = conf.config["password"]
+        inputPassword = pg.password("Digita sua senha para continuar", "Autenticação")
+        if inputPassword:
+            if inputPassword == password:
+                self.alert("Você está autenticado!", "Aviso", True)
+                self.print("Senha correta")
+                return True
+        self.alert("Você não está autenticado!", "Aviso", True)
+        time.sleep(2)
+        self.closeProgram()
+        return False
+
+    # Fechar programa atual e ir para a área de trabalho
+    def closeProgram(self):
+        pg.hotkey("win", "ctrl", "d")
+        self.alert("Por razões de segurança, os programas foram fechados.", "Aviso", True)
 
     # Imprimir no console
     def print(self, msg):
