@@ -10,13 +10,13 @@ pg.FAILSAFE = True
 
 
 class VerifyFolders:
-    filesFoldersAcept = []
+    filesFoldersAccept = []
     filesInFolders = []
     foldersToVerify = []
 
     def __init__(self, folders):
         self.foldersToVerify = folders
-        self.filesFoldersAcept = self.readFile(self.foldersToVerify)
+        self.filesFoldersAccept = self.readFile(self.foldersToVerify)
         self.filesInFolders = self.listFiles(self.foldersToVerify)
         self.verifyFiles(self.foldersToVerify)
 
@@ -28,7 +28,7 @@ class VerifyFolders:
         for folder in fileJson:
             if folder in folders:
                 files[folder] = fileJson[folder]
-        print("Arquivos aceitos: \n"+str(files))
+        # print("Arquivos aceitos: \n"+str(files))
         return files
 
     # Lista os arquivos do desktop
@@ -42,12 +42,14 @@ class VerifyFolders:
     def verifyFiles(self, folders = filesInFolders):
         arquivosDesconhecidos = {}
         for folder in folders:
-            # print(self.filesInFolders[folder])
             for file in self.filesInFolders[folder]:
-                if file not in self.filesFoldersAcept[folder]:
-                    print("Arq desc: ["+folder+"] "+file)
-                    # adiciona ao objeto arquivosDesconhecidos
-                    arquivosDesconhecidos[file] = folder
+                # Verifica a [key] é válida
+                if folder in self.filesFoldersAccept:
+                    # Verifica se o arquivo está na lista de arquivos aceitos
+                    if file not in self.filesFoldersAccept[folder]:
+                        print("Arq desc: ["+folder+"] "+file)
+                        # adiciona ao objeto arquivosDesconhecidos
+                        arquivosDesconhecidos[file] = folder
         if len(arquivosDesconhecidos) > 0:
             prompt = pg.confirm("O que deseja fazer?", "Arquivos não listados encontrados", ["Oganizar", "Ignorar"])
             if prompt == "Oganizar":

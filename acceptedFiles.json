@@ -1,12 +1,13 @@
 {
     "Desktop": [
+        "arquivosNaoListados.txt",
         "INICIALIZAR.lnk",
         "PROJETOS",
         "LIXEIRA",
         "ARQUIVOS RELEVANTES",
         "desktop.ini",
         "outros",
-        "outrasPastas",
+        "OutrasPastas",
         "FERRAMENTAS",
         "package-wallpapers-ead",
         "img-empreas-ead",
@@ -17,6 +18,5 @@
         "Xls"
     ],
     "Downloads": [
-        "Imgs"
     ]
 }
