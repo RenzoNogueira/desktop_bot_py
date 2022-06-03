@@ -4,6 +4,7 @@ import os
 import vars
 import tools.tools as tl
 import pyautogui as pg
+import time
 
 # set charset utf-8
 pg.FAILSAFE = True
@@ -13,11 +14,16 @@ class VerifyFolders:
     filesFoldersAccept = []
     filesInFolders = []
     foldersToVerify = []
+    inLooping = False
+    timeInterval = 0
 
     def __init__(self, folders):
         self.foldersToVerify = folders
         self.filesFoldersAccept = self.readFile(self.foldersToVerify)
         self.filesInFolders = self.listFiles(self.foldersToVerify)
+        
+    def __call__(self):
+        # Verifica os arquivos do computador
         self.verifyFiles(self.foldersToVerify)
 
     # Lê o arquivo json de arquivos aceitos
