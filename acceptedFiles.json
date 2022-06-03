@@ -13,10 +13,13 @@
         "img-empreas-ead",
         "Encerrar_Computador_Expediente.bat",
         "Desligar_Computador.bat.lnk",
-        "Docs",
-        "Imgs",
-        "Xls"
+        "Pastas"
     ],
     "Downloads": [
+        "Pastas",
+        "docx",
+        "jpg",
+        "png",
+        "xlsx"
     ]
 }

@@ -84,6 +84,8 @@ class VerifyFolders:
         # Veridica se a extensão do arquivo é conhecida
         for ext in fileExtensions:
             if file.endswith(ext):
+                # Retira o ponto da primeira posição da string
+                ext = ext[1:]
                 # Verifica se pasta existe, se não existir, cria
                 self.verifyFolder(folder+"/"+ext)
                 # Move o arquivo para a pasta

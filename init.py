@@ -1,4 +1,6 @@
 import files.verifyFolders as dskTv
 import confing.cof as conf
+import saudacao.hello as saudacao
 
-deskTopVerify = dskTv.VerifyFolders(conf.confing["foldersForVerirify"])
+if saudacao.saudacao():
+    deskTopVerify = dskTv.VerifyFolders(conf.confing["foldersForVerirify"])
