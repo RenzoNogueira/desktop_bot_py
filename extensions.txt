@@ -2810,6 +2810,7 @@
 .wdf
 .wdl
 .web
+.webm
 .wer
 .wfc
 .wfm
