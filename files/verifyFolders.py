@@ -15,6 +15,7 @@ class VerifyFolders:
     filesInFolders = []
     foldersToVerify = []
     fileExtensions = []
+    arquivosIgonorados = []
     inLooping = False
     timeInterval = 0
 
@@ -61,13 +62,19 @@ class VerifyFolders:
     def verifyFiles(self, folders = filesInFolders):
         arquivosDesconhecidos = {}
         pastaspredefinidas = ["Outros", "Pastas"]
+        self.arquivosIgonorados = self.recoverLogFile()
+
         # Retiras os . dos itens do array self.fileExtensions
         for folder in folders:
             for file in self.filesInFolders[folder]:
                 # Verifica a [key] é válida
                 if folder in self.filesFoldersAccept:
                     # Verifica se o arquivo está na lista de arquivos aceitos
-                    if file not in self.filesFoldersAccept[folder] and file not in [x[1:] for x in self.fileExtensions] and file not in pastaspredefinidas:
+                    if file not in self.filesFoldersAccept[folder] and file not in [x[1:] for x in self.fileExtensions] and file not in pastaspredefinidas and file not in [x[1:] for x in self.arquivosIgonorados]:
+                        # Se não estiver, adiciona na lista de arquivos desconhecidos
+                        if folder not in arquivosDesconhecidos:
+                            arquivosDesconhecidos[folder] = []
+                        arquivosDesconhecidos[folder].append(file)
                         print("Arq desc: ["+folder+"] "+file)
                         # adiciona ao objeto arquivosDesconhecidos
                         arquivosDesconhecidos[file] = folder
@@ -92,13 +99,28 @@ class VerifyFolders:
     def createLogFile(self, files):
         logFile = open(vars.rootPc+"Desktop/arquivosNaoListados.txt", "w", encoding="utf-8")
         for file in files:
+            print(file)
             logFile.write(files[file] + ": " + file + "\n")
         logFile.close()
         return True
 
+    # Recupera o arquivo de log
+    def recoverLogFile(self):
+        # Verifica se o arquivo existe
+        if os.path.exists(vars.rootPc+"Desktop/arquivosNaoListados.txt"):
+            logFile = open(vars.rootPc+"Desktop/arquivosNaoListados.txt", "r", encoding="utf-8")
+            logFile = logFile.read()
+            # Converte o arquivo de log em um array separado por chave : valor
+            logFile = logFile.split("\n")
+            logFile = [x.split(": ") for x in logFile]
+            return logFile
+        else:
+            return []
+
     # Organizar os arquivos recebidos por parametro em pastas com suas determinadas extensões
     def organizeFiles(self, folder, file):
         tarefaCompleta = False
+        # Verifica se o caminho não está lisado no  arquivo de log
         # Veridica se a extensão do arquivo é conhecida
         for ext in self.fileExtensions:
             if file.endswith(ext):
