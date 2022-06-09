@@ -6,11 +6,11 @@ import vars
 def saudacao():
     saudacao = None
     #  verifica a hora do dia para dar "Bom dia", "Boa tarde" ou "Boa noite"
-    if time.strftime("%H") >= "06" and time.strftime("%H") <= "12":
+    if time.strftime("%H") >= "5" and time.strftime("%H") <= "12":
         saudacao = "Bom dia"
     elif time.strftime("%H") >= "13" and time.strftime("%H") <= "18":
         saudacao = "Boa tarde"
-    elif time.strftime("%H") >= "19" and time.strftime("%H") <= "23":
+    else:
         saudacao = "Boa noite"
 
     confirm = pg.confirm("\tOlá, seja bem vindo!\n\n\t\t😁\n\nDeseja que eu execute alguns processos em segundo plano?", "Olá, "+saudacao+ " "+ vars.user,  ["Executar", "Não obrigado"])

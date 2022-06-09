@@ -1,5 +1,6 @@
 from asyncore import read
 from operator import index
+import asyncio
 import os
 import vars
 import tools.tools as tl
@@ -13,17 +14,30 @@ class VerifyFolders:
     filesFoldersAccept = []
     filesInFolders = []
     foldersToVerify = []
+    fileExtensions = []
     inLooping = False
     timeInterval = 0
 
-    def __init__(self, folders):
+    def __init__(self, folders, inLooping):
         self.foldersToVerify = folders
+        self.inLooping = inLooping
+        # Carrega os arquivos aceitos
         self.filesFoldersAccept = self.readFile(self.foldersToVerify)
-        self.filesInFolders = self.listFiles(self.foldersToVerify)
         
-    def __call__(self):
+        # Lê arquivo txt contendo as extensões
+        self.fileExtensions = open("extensions.txt", "r", encoding="utf-8")
+        self.fileExtensions = self.fileExtensions.read().split("\n")
+        
+    async def __call__(self):
+        print("InLooping Files")
+        # Lista os arquivos do computador
+        self.filesInFolders = self.listFiles(self.foldersToVerify)
         # Verifica os arquivos do computador
         self.verifyFiles(self.foldersToVerify)
+        if self.inLooping:
+            await asyncio.sleep(4)
+            await self.__call__()
+
 
     # Lê o arquivo json de arquivos aceitos
     def readFile(self, folders = foldersToVerify):
@@ -46,12 +60,14 @@ class VerifyFolders:
     # Verifica se os arquivos do desktop estão corretos
     def verifyFiles(self, folders = filesInFolders):
         arquivosDesconhecidos = {}
+        pastaspredefinidas = ["Outros", "Pastas"]
+        # Retiras os . dos itens do array self.fileExtensions
         for folder in folders:
             for file in self.filesInFolders[folder]:
                 # Verifica a [key] é válida
                 if folder in self.filesFoldersAccept:
                     # Verifica se o arquivo está na lista de arquivos aceitos
-                    if file not in self.filesFoldersAccept[folder]:
+                    if file not in self.filesFoldersAccept[folder] and file not in [x[1:] for x in self.fileExtensions] and file not in pastaspredefinidas:
                         print("Arq desc: ["+folder+"] "+file)
                         # adiciona ao objeto arquivosDesconhecidos
                         arquivosDesconhecidos[file] = folder
@@ -64,7 +80,7 @@ class VerifyFolders:
             elif prompt == "Ignorar":
                 self.createLogFile(arquivosDesconhecidos)
                 pg.alert("Os arquivos não listados foram ignorados e estão listados em um arquivo txt na área de trabalho.","Você optou por ignorar os arquivos não listados.")
-        return len(arquivosDesconhecidos) == 0
+        
 
     # Deletar arquivos passados por parametro
     def deleteFiles(self, files):
@@ -82,39 +98,49 @@ class VerifyFolders:
 
     # Organizar os arquivos recebidos por parametro em pastas com suas determinadas extensões
     def organizeFiles(self, folder, file):
-        # Lê arquivo txt contendo as extensões
-        fileExtensions = open("extensions.txt", "r", encoding="utf-8")
-        fileExtensions = fileExtensions.read().split("\n")
         tarefaCompleta = False
         # Veridica se a extensão do arquivo é conhecida
-        for ext in fileExtensions:
+        for ext in self.fileExtensions:
             if file.endswith(ext):
-                # Retira o ponto da primeira posição da string
+                # Remove o . da extensão
                 ext = ext[1:]
                 # Verifica se pasta existe, se não existir, cria
                 self.verifyFolder(folder+"/"+ext)
                 # Move o arquivo para a pasta
-                os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/"+ext+"/"+file)
-                print("Arquivo movido: "+folder+"/"+file)
-                tarefaCompleta = True
+                try:
+                    os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/"+ext+"/"+file)
+                    print("Arquivo movido: "+folder+"/"+file)
+                    tarefaCompleta = True
+                except:
+                    print("Erro ao mover arquivo: "+folder+"/"+file)
+                    return False
                 return True
-        # Senão mover para pasta Outros
+        # Senão, mover para pasta Pasta
         if not tarefaCompleta:
             # verifica se o arquivo é uma pasta
             if os.path.isdir(vars.rootPc+folder+"/"+file):
                 # Verifica se pasta existe, se não existir, cria
                 self.verifyFolder(folder+"/Pastas/")
                 # Move a pasta para Pastas
-                os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/Pastas/"+file)
-                print("Pasta movida: "+folder+"/Pastas/"+file)
-                tarefaCompleta = True
+                try:
+                    os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/Pastas/"+file)
+                    print("Pasta movida: "+folder+"/Pastas/"+file)
+                    tarefaCompleta = True
+                except:
+                    print("Erro ao mover pasta: "+folder+"/Pastas/"+file)
+                    return False
                 return True
             else:
                 # Verifica se pasta existe, se não existir, cria
                 self.verifyFolder(folder+"/Outros")
                 # Move o arquivo para a Outros
-                os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/Outros/"+file)
-                print("Arquivo movido: "+folder+"/Outros/"+file)
+                try:
+                    os.rename(vars.rootPc+folder+"/"+file, vars.rootPc+folder+"/Outros/"+file)
+                    print("Arquivo movido: "+folder+"/Outros/"+file)
+                    tarefaCompleta = True
+                except:
+                    print("Erro ao mover arquivo: "+folder+"/Outros/"+file)
+                    return False
                 return True
         return tarefaCompleta
 

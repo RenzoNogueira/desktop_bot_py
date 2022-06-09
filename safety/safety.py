@@ -1,4 +1,5 @@
 import pyautogui as pg
+import asyncio
 import time
 import json
 import config.cof as conf
@@ -15,14 +16,15 @@ class safety:
         self.toVerify = json.load(self.toVerify)
 
     # Se chamado como método
-    def __call__(self):
+    async def __call__(self):
         self.print("InLooping")
         # Verificar se está em um site Privado
-        self.checkPrivacity(self.toVerify)
+        await self.checkPrivacity(self.toVerify)
         # Se inLooping for True, se rechamar o método
         if self.inLooping:
-            time.sleep(self.timeInterval)
-            self.__call__()
+            await asyncio.sleep(self.timeInterval)
+            # time.sleep(self.timeInterval)
+            await self.__call__()
 
     # Localiza o objeto na tela
     def locateImg(self, img):
@@ -55,7 +57,7 @@ class safety:
             return False
     
     # Verificar se está em um site Privado
-    def checkPrivacity(self, obj = toVerify):
+    async def checkPrivacity(self, obj = toVerify):
         breaking = False
         for sc in obj:
             if breaking:

@@ -1,11 +1,21 @@
 import files.verifyFolders as dskTv
 import config.cof as conf
+import asyncio
 import safety.safety as safety
 import saudacao.hello as saudacao
 
-if saudacao.saudacao():
-    dskTv = dskTv.VerifyFolders(conf.config["foldersForVerirify"])
-    dskTv()
+async def fundskTv():
+    if saudacao.saudacao():
+        dsk = dskTv.VerifyFolders(conf.config["foldersForVerirify"], True)
+        await dsk()
 
-safety = safety.safety(True, 4)
-safety()
+async def funsafety():
+    saf = safety.safety(True, 4)
+    await saf()
+
+async def main():
+    f1 = asyncio.create_task(fundskTv())
+    f2 = asyncio.create_task(funsafety())
+    await asyncio.wait([f1, f2])
+
+asyncio.run(main())
